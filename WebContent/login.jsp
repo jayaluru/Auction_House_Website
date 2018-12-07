@@ -17,6 +17,7 @@
     padding: 50px;
     line-height: 0.3;
 }
+
 </style>
 <body>
 	<div class="menu" align = "Center">
