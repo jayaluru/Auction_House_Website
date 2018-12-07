@@ -29,12 +29,10 @@
 	%>
 	<div class="menu" align = "Center">
 		<a href="home.jsp" name="menuhome">Home</a>
-		<a href="category.jsp" name="menucategory">Category</a>
+		<a href="product.jsp" name="menucategory">Product</a>
 		<a href="cart.jsp" name="menucart">Cart</a>
 		<a href="inventory.jsp" name="menuinventory">Inventory</a>
 		<a href="transactions.jsp" name="menutransactions">Transactions</a>
-		<a href="about.jsp" name="menuabout">About</a>
-		<a href="faq.jsp" name="menufaq">FAQs</a>
 		<a href="profile.jsp" name="menuprofile">Profile</a>
 		<a href="logout.jsp" name="menulogout">Logout</a>
 		<hr>
@@ -47,7 +45,7 @@
 	</div>
  	<hr>
 	<h3 align="center" style="color:brown;"> Transaction Complete </h3>
-	<h4 align="left"> Thanks for shopping at ArtKart, <%=name%>!  </h4>
+	<h4 align="left"> Thanks for shopping at Auction Website, <%=name%>!  </h4>
 	<a href="category.jsp">Continue Shopping</a>
 </body>
 </html> 

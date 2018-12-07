@@ -1,20 +1,20 @@
-DROP SCHEMA IF EXISTS `artkart` ;
+DROP SCHEMA IF EXISTS `auctionwebsite` ;
 
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 -- -----------------------------------------------------
--- Schema artkart
+-- Schema auctionwebsite
 -- -----------------------------------------------------
 -- -----------------------------------------------------
--- Schema artkart
+-- Schema auctionwebsite
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `artkart` DEFAULT CHARACTER SET utf8 ;
-USE `artkart` ;
+CREATE SCHEMA IF NOT EXISTS `auctionwebsite` DEFAULT CHARACTER SET utf8 ;
+USE `auctionwebsite` ;
 -- -----------------------------------------------------
--- Table `artkart`.`User`
+-- Table `auctionwebsite`.`User`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `artkart`.`User` (
+CREATE TABLE IF NOT EXISTS `auctionwebsite`.`User` (
   `userId` INT NOT NULL AUTO_INCREMENT,
   `username` VARCHAR(16) NOT NULL,
   `password` VARCHAR(32) NOT NULL,
@@ -26,9 +26,9 @@ CREATE TABLE IF NOT EXISTS `artkart`.`User` (
   UNIQUE INDEX `User_userId_UNIQUE` (`userId` ASC),
   UNIQUE INDEX `User_username_UNIQUE` (`username` ASC));
 -- -----------------------------------------------------
--- Table `artkart`.`CreditCard`
+-- Table `auctionwebsite`.`CreditCard`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `artkart`.`CreditCard` (
+CREATE TABLE IF NOT EXISTS `auctionwebsite`.`CreditCard` (
   `cardId` INT NOT NULL AUTO_INCREMENT,
   `userId` INT NOT NULL,
   `number` VARCHAR(19) NOT NULL,
@@ -39,13 +39,13 @@ CREATE TABLE IF NOT EXISTS `artkart`.`CreditCard` (
   INDEX `CreditCard_userId_idx` (`userId` ASC),
   CONSTRAINT `fk_CreditCard_User_userId`
     FOREIGN KEY (`userId`)
-    REFERENCES `artkart`.`User` (`userId`)
+    REFERENCES `auctionwebsite`.`User` (`userId`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
 -- -----------------------------------------------------
--- Table `artkart`.`Cart`
+-- Table `auctionwebsite`.`Cart`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `artkart`.`Cart` (
+CREATE TABLE IF NOT EXISTS `auctionwebsite`.`Cart` (
   `cartId` INT NOT NULL AUTO_INCREMENT,
   `userId` INT NOT NULL,
   PRIMARY KEY (`cartId`),
@@ -53,13 +53,13 @@ CREATE TABLE IF NOT EXISTS `artkart`.`Cart` (
   UNIQUE INDEX `Cart_cartId_UNIQUE` (`cartId` ASC),
   CONSTRAINT `fk_Cart_User_userId`
     FOREIGN KEY (`userId`)
-    REFERENCES `artkart`.`User` (`userId`)
+    REFERENCES `auctionwebsite`.`User` (`userId`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
 -- -----------------------------------------------------
--- Table `artkart`.`Inventory`
+-- Table `auctionwebsite`.`Inventory`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `artkart`.`Inventory` (
+CREATE TABLE IF NOT EXISTS `auctionwebsite`.`Inventory` (
   `invnId` INT NOT NULL AUTO_INCREMENT,
   `userId` INT NOT NULL,
   PRIMARY KEY (`invnId`),
@@ -67,13 +67,13 @@ CREATE TABLE IF NOT EXISTS `artkart`.`Inventory` (
   UNIQUE INDEX `Inventory_invnId_UNIQUE` (`invnId` ASC),
   CONSTRAINT `fk_Inventory_User_userId`
     FOREIGN KEY (`userId`)
-    REFERENCES `artkart`.`User` (`userId`)
+    REFERENCES `auctionwebsite`.`User` (`userId`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
 -- -----------------------------------------------------
--- Table `artkart`.`Product`
+-- Table `auctionwebsite`.`Product`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `artkart`.`Product` (
+CREATE TABLE IF NOT EXISTS `auctionwebsite`.`Product` (
   `prodId` INT NOT NULL AUTO_INCREMENT,
   `catId` INT NOT NULL,
   `name` VARCHAR(255) NOT NULL,
@@ -85,58 +85,58 @@ CREATE TABLE IF NOT EXISTS `artkart`.`Product` (
   UNIQUE INDEX `Product_prodId_UNIQUE` (`prodId` ASC),
   CONSTRAINT `fk_Product_Category_catId`
     FOREIGN KEY (`catId`)
-    REFERENCES `artkart`.`Category` (`catId`)
+    REFERENCES `auctionwebsite`.`Category` (`catId`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
   -- -----------------------------------------------------
--- Table `artkart`.`Category`
+-- Table `auctionwebsite`.`Category`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `artkart`.`Category` (
+CREATE TABLE IF NOT EXISTS `auctionwebsite`.`Category` (
   `catId` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(255) NOT NULL,
   `description` VARCHAR(2000) NULL,
   PRIMARY KEY (`catId`),
   INDEX `Category_catId_idx` (`catId` ASC));
 -- -----------------------------------------------------
--- Table `artkart`.`InventoryProduct`
+-- Table `auctionwebsite`.`InventoryProduct`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `artkart`.`InventoryProduct` (
+CREATE TABLE IF NOT EXISTS `auctionwebsite`.`InventoryProduct` (
   `invnId` INT NOT NULL,
   `prodId` INT NOT NULL,
   PRIMARY KEY (`invnId`, `prodId`),
   INDEX `InventoryProduct_prodId_idx` (`prodId` ASC),
   CONSTRAINT `fk_InventoryProduct_Inventory_invnId`
     FOREIGN KEY (`invnId`)
-    REFERENCES `artkart`.`Inventory` (`invnId`)
+    REFERENCES `auctionwebsite`.`Inventory` (`invnId`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_InventoryProduct_Product_prodId`
     FOREIGN KEY (`prodId`)
-    REFERENCES `artkart`.`Product` (`prodId`)
+    REFERENCES `auctionwebsite`.`Product` (`prodId`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
 -- -----------------------------------------------------
--- Table `artkart`.`CartProduct`
+-- Table `auctionwebsite`.`CartProduct`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `artkart`.`CartProduct` (
+CREATE TABLE IF NOT EXISTS `auctionwebsite`.`CartProduct` (
   `cartId` INT NOT NULL,
   `prodId` INT NOT NULL,
   PRIMARY KEY (`cartId`, `prodId`),
   INDEX `CartProduct_prodId_idx` (`prodId` ASC),
   CONSTRAINT `fk_CartProduct_Cart_cartId`
     FOREIGN KEY (`cartId`)
-    REFERENCES `artkart`.`Cart` (`cartId`)
+    REFERENCES `auctionwebsite`.`Cart` (`cartId`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_CartProduct_Product_prodId`
     FOREIGN KEY (`prodId`)
-    REFERENCES `artkart`.`Product` (`prodId`)
+    REFERENCES `auctionwebsite`.`Product` (`prodId`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
 -- -----------------------------------------------------
--- Table `artkart`.`Transaction`
+-- Table `auctionwebsite`.`Transaction`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `artkart`.`Transaction` (
+CREATE TABLE IF NOT EXISTS `auctionwebsite`.`Transaction` (
   `trxnId` INT NOT NULL AUTO_INCREMENT,
   `userId` INT NOT NULL,
   `date` DATETIME NOT NULL,
@@ -146,31 +146,31 @@ CREATE TABLE IF NOT EXISTS `artkart`.`Transaction` (
   INDEX `Transaction_userId_idx` (`userId` ASC),
   CONSTRAINT `fk_Transaction_User_userId`
     FOREIGN KEY (`userId`)
-    REFERENCES `artkart`.`User` (`userId`)
+    REFERENCES `auctionwebsite`.`User` (`userId`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
 -- -----------------------------------------------------
--- Table `artkart`.`TransactionProduct`
+-- Table `auctionwebsite`.`TransactionProduct`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `artkart`.`TransactionProduct` (
+CREATE TABLE IF NOT EXISTS `auctionwebsite`.`TransactionProduct` (
   `trxnId` INT NOT NULL,
   `prodId` INT NOT NULL,
   PRIMARY KEY (`trxnId`, `prodId`),
   INDEX `TransactionProduct_prodId_idx` (`prodId` ASC),
   CONSTRAINT `fk_TransactionProduct_Transaction_txnId`
     FOREIGN KEY (`trxnId`)
-    REFERENCES `artkart`.`Transaction` (`trxnId`)
+    REFERENCES `auctionwebsite`.`Transaction` (`trxnId`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_TransactionProduct_Product_prodId`
     FOREIGN KEY (`prodId`)
-    REFERENCES `artkart`.`Product` (`prodId`)
+    REFERENCES `auctionwebsite`.`Product` (`prodId`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
 -- -----------------------------------------------------
--- Table `artkart`.`Painting`
+-- Table `auctionwebsite`.`Painting`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `artkart`.`Painting` (
+CREATE TABLE IF NOT EXISTS `auctionwebsite`.`Painting` (
   `prodId` INT NOT NULL,
   `canvasType` VARCHAR(255) NOT NULL,
   `paintType` VARCHAR(255) NOT NULL,
@@ -180,13 +180,13 @@ CREATE TABLE IF NOT EXISTS `artkart`.`Painting` (
   INDEX `Painting_prodId_idx` (`prodId` ASC),
   CONSTRAINT `fk_Painting_Product_prodId`
     FOREIGN KEY (`prodId`)
-    REFERENCES `artkart`.`Product` (`prodId`)
+    REFERENCES `auctionwebsite`.`Product` (`prodId`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
 -- -----------------------------------------------------
--- Table `artkart`.`Sculpture`
+-- Table `auctionwebsite`.`Sculpture`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `artkart`.`Sculpture` (
+CREATE TABLE IF NOT EXISTS `auctionwebsite`.`Sculpture` (
   `prodId` INT NOT NULL,
   `material` VARCHAR(255) NOT NULL,
   `weight` DOUBLE NOT NULL, 
@@ -197,13 +197,13 @@ CREATE TABLE IF NOT EXISTS `artkart`.`Sculpture` (
   INDEX `Sculpture_prodId_idx` (`prodId` ASC),
   CONSTRAINT `fk_Sculpture_Product_prodId`
     FOREIGN KEY (`prodId`)
-    REFERENCES `artkart`.`Product` (`prodId`)
+    REFERENCES `auctionwebsite`.`Product` (`prodId`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
 -- -----------------------------------------------------
--- Table `artkart`.`Craft`
+-- Table `auctionwebsite`.`Craft`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `artkart`.`Craft` (
+CREATE TABLE IF NOT EXISTS `auctionwebsite`.`Craft` (
   `prodId` INT NOT NULL,
   `usage` VARCHAR(255) NOT NULL,
   `length` DOUBLE NOT NULL,
@@ -213,13 +213,13 @@ CREATE TABLE IF NOT EXISTS `artkart`.`Craft` (
   INDEX `Craft_prodId_idx` (`prodId` ASC),
   CONSTRAINT `fk_Craft_Product_prodId`
     FOREIGN KEY (`prodId`)
-    REFERENCES `artkart`.`Product` (`prodId`)
+    REFERENCES `auctionwebsite`.`Product` (`prodId`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
 
-INSERT INTO `artkart`.`Category` VALUES (1, 'Painting', '');
-INSERT INTO `artkart`.`Category` VALUES (2, 'Sculpture', '');
-INSERT INTO `artkart`.`Category` VALUES (3, 'Craft', '');
+INSERT INTO `auctionwebsite`.`Category` VALUES (1, 'Painting', '');
+INSERT INTO `auctionwebsite`.`Category` VALUES (2, 'Sculpture', '');
+INSERT INTO `auctionwebsite`.`Category` VALUES (3, 'Craft', '');
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
