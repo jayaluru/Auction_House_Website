@@ -3,6 +3,7 @@
 <%@page import="db.services.ProductPersistenceService"%>
 <%@page import="db.services.impl.ProductPersistenceServiceImpl"%>
 <%@page import="domain.product.Product"%>
+<%@page import="domain.product.ProductBid"%>
 <%@page import="java.sql.*"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
@@ -53,13 +54,14 @@
 	<%
 	ProductPersistenceService productService = ProductPersistenceServiceImpl.getInstance();
 	Product prod = productService.retrieveCurrrentAuctionProduct();
+	
  	%>
 	
 	<h4>Products in Inventory:</h4>
 	<%
 	
 	if (prod!=null){
-	
+		ProductBid productBid = productService.getHighestBid(prod.getProdId());
 	%>
 	<table border="1" style="margin-top: 20px; margin-right: 20px; margin-left: 29px; border-top-width: 2px;">
 		<tr>
@@ -67,15 +69,20 @@
 			<th>Name</th>
 			<th>Description</th>
 			<th>Price</th>
+			<th>Highest Bid</th>
+			<th>Highest Bid User</th>
 		</tr>
 		<tr>			
 			<td><img src="data:image/jpeg;base64, <%= prod.getEncodedImage() %> " height="100" width="100" alt="bye"/></td>
 			<td><%= prod.getName() %></td>
 			<td><%= prod.getDescription() %></td>
 			<td><%= prod.getPrice() %></td>
+			<td><%= productBid.getPrice() %></td>
+			<td><%= productBid.getUserId() %></td>
 		</tr>
 	</table>
-	
+	<br>
+	<br>
 	<form name="bidform" action="BidController" method="post">
 		<input type="text" name="bid" id="bid">
 		<input type="submit" name="submit" value="Make Bid" >

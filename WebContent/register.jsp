@@ -41,21 +41,35 @@
 		<br>
 		<div id="username_error"></div>
 		<br>
+		<br>
 		Name: <input type="text" name="name">
+		<br>
 		<br>
 		Description: <input type="text" name="description">
 		<br>
+		<br>
 		Password: <input type="password" name="password" id="password"> 
+		<br>
 		<br>
 		Re-Type Password: <input type="password" name="retry-password" id="retry-password"> 
 		<br>
+		<br>
 		Address: <input type="text" name="address"> 
 		<br>
+		<br>
 		Credit Card Number: <input type="text" name="number"> 
-		<br>	
+		<br>
+		<br>
 		ExpDate: <input type="date" name="expdate" value='<%=new Date(System.currentTimeMillis())%>'> 
-		<br>	
+		<br>
+		<br>
 		CVV: <input type="text" name="cvv"> 
+		<br>
+		<br>
+		Security Question: <input type="text" name="securityQuestion" value="Your childhood name">
+		<br>
+		<br>
+		Security Answer: <input type="text" name="securityAnswer">
 		<br>
 		<div id="password_error"></div>
 		<br>

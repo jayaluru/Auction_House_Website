@@ -24,7 +24,7 @@ import domain.product.ProductBid;
 public class ProductDaoImpl implements ProductDao {
 	private static final String placeBid = 
 			"INSERT INTO "
-			+ "PRODUCT (prodId, userId, bid) "
+			+ "PRODUCTBID (prodId, userId, bid) "
 			+ "VALUES (?, ?, ?)";
 	
 	private static final String findHighestBid = 

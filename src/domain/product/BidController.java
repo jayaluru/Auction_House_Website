@@ -40,6 +40,18 @@ public class BidController extends HttpServlet {
 		
 		try {
 			Product product = productServieImpl.retrieveCurrrentAuctionProduct();
+			Double price = Double.parseDouble(request.getParameter("bid"));
+			
+			ProductBid productBid = new ProductBid();
+			productBid.setPrice(price);
+			productBid.setProdId(product.getProdId());
+			productBid.setUserId(userId);
+			
+			ProductBid productBid1 = productServieImpl.placeBid(productBid);
+			
+			if(productBid1 == null) {
+				
+			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -48,50 +60,7 @@ public class BidController extends HttpServlet {
 			e.printStackTrace();
 		}
 		
-		
-//		Double price = Double.parseDouble(request.getParameter("price"));
-//		Date date = new Date(System.currentTimeMillis());
-//		try {
-//			date = new java.sql.Date(new SimpleDateFormat("yyyy-MM-dd").parse(request.getParameter("biddate")).getTime());
-//		} catch (ParseException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		String startbid = request.getParameter("startbid");
-//		String endbid = request.getParameter("endbid");
-//		
-//		
-//		// obtains the upload file part in this multipart request
-//        Part filePart = request.getPart("file");
-//        // obtains input stream of the upload file
-//        InputStream inputStream = filePart.getInputStream();
-//        BufferedImage image = ImageIO.read(inputStream);
-//        if (image == null)
-//        {
-//        	image = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB);
-//        }
-//        
-//        
-//        
-//		Product product = new Product();
-//		product.setName(name);
-//		product.setDescription(description);
-//		product.setPrice(price);
-//		product.setSold(false);
-//		product.setBidStartTime(startbid);
-//		product.setBidEndTime(endbid);
-//		product.setBidDate(date);
-//		product.setImage(image);
-//
-//		try {
-//			productServieImpl.create(product, invnId);
-//		} catch (Exception ex) {
-//			System.out.println(ex);
-//			ex.printStackTrace(System.out);
-//			// TODO return failure message
-//		}
-		
-		RequestDispatcher rs = request.getRequestDispatcher("inventory.jsp");
+		RequestDispatcher rs = request.getRequestDispatcher("product.jsp");
 		rs.forward(request, response);
 	}
 	

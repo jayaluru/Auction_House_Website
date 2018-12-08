@@ -33,6 +33,8 @@ public class RegisterController extends HttpServlet {
 		user.setName(request.getParameter("name"));
 		user.setDescription(request.getParameter("description"));
 		user.setAddress(request.getParameter("address"));
+		user.setSecurityQuestion(request.getParameter("securityQuestion"));
+		user.setSecurityAnswer(request.getParameter("securityAnswer"));
 		CreditCard card = new CreditCard();
 		card.setNumber(request.getParameter("number"));
 		card.setExpDate(Date.valueOf(request.getParameter("expdate")));

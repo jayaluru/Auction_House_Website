@@ -63,7 +63,12 @@
 	<% 
 	if (sameUser) 
 	{
-		%><h3>Your Profile:</h3><%
+		%><h3>Your Profile:</h3>
+		<br>
+		<form>
+			<a name = "Product" href="editprofile.jsp" style="left: 460px;">Edit Profile</a>
+		</form>
+		<br><%
 	}
 	else {
 		%><h3>User Profile:</h3><%
@@ -89,6 +94,7 @@
 	<table>
 		<tr><th>User Details:&nbsp&nbsp&nbsp&nbsp&nbsp </th><th></th></tr>
 		<tr><td>Username:</td><td><%=profileUser.getUsername()%></td></tr>
+		<tr><td>Name:</td><td><%=profileUser.getName()%></td></tr>
 		<tr><td>Description:</td><td><%=profileUser.getDescription()%></td></tr>
 		<tr><td>Products Sold:</td><td><%=totalSold%></td></tr>
 		<tr><td>Average Price:</td><td><%=avgPrice%></td></tr>

@@ -33,6 +33,29 @@ public class ProductPersistenceServiceImpl implements ProductPersistenceService 
 		return instance;
 	}
 	
+	@Override
+	public ProductBid getHighestBid(Integer prodId) throws SQLException, DaoException{
+		Connection connection = db.getConnection();
+
+		try {
+			connection.setAutoCommit(false);
+
+			ProductBid bid = prodDao.getHighestBid(connection, prodId);
+			
+			return bid;
+		} catch (Exception ex) {
+			connection.rollback();
+			throw ex;
+		} finally {
+			if (connection != null) {
+				connection.setAutoCommit(true);
+				if (!connection.isClosed()) {
+					connection.close();
+				}
+			}
+		}
+	}
+	
 	
 	@Override
 	public ProductBid placeBid(ProductBid productBid) throws SQLException, DaoException{

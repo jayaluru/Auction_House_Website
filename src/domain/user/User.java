@@ -16,6 +16,8 @@ public class User {
 	private Inventory inventory;
 	private CreditCard creditCard;
 	private List<Transaction> transactions;
+	private String securityQuestion;
+	private String securityAnswer;
 
 	public String getUsername() {
 		return username;
@@ -103,6 +105,22 @@ public class User {
 
 	public void setActive(boolean active) {
 		this.active = active;
+	}
+
+	public String getSecurityQuestion() {
+		return securityQuestion;
+	}
+
+	public void setSecurityQuestion(String securityQuestion) {
+		this.securityQuestion = securityQuestion;
+	}
+
+	public String getSecurityAnswer() {
+		return securityAnswer;
+	}
+
+	public void setSecurityAnswer(String securityAnswer) {
+		this.securityAnswer = securityAnswer;
 	}
 	
 }

@@ -8,6 +8,8 @@ import domain.product.Product;
 import domain.product.ProductBid;
 
 public interface ProductPersistenceService {
+	public ProductBid getHighestBid(Integer prodId) throws SQLException, DaoException;
+	
 	public ProductBid placeBid(ProductBid productBid) throws SQLException, DaoException;
 	
 	public void create(Product prod, Integer invnId) throws SQLException, DaoException;

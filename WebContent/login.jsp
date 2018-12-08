@@ -45,7 +45,8 @@
 	<br>
 	<input type="submit" name="submit" value="login">
 	<br>
-	<a href="register.jsp">registration</a>
+	<a href="forgotpassword.jsp">Forgot Password</a>&nbsp&nbsp
+	<a href="register.jsp">Registration</a>
 	</form>
 </body>
 </html>
