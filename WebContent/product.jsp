@@ -29,8 +29,7 @@
 	%>
 	<div class="menu" align = "Center">
 		<a href="home.jsp" name="menuhome">Home</a>
-		<a href="product.jsp" name="menucategory">Product</a>
-		<a href="cart.jsp" name="menucart">Cart</a>
+		<a href="product.jsp" name="menuproduct">Product</a>
 		<a href="inventory.jsp" name="menuinventory">Inventory</a>
 		<a href="transactions.jsp" name="menutransactions">Transactions</a>
 		<a href="profile.jsp" name="menuprofile">Profile</a>
@@ -47,10 +46,6 @@
 	<h3 align="center" style="color:brown;"> Choose a category. </h3>
 	<h4 align="left"> Select from a list of product categories: </h4>
 	<hr>
-	<div class="menu" align = "Center">
-	<a href="paintings.jsp" name="paintings">Paintings</a>
-	<a href="sculptures.jsp" name="sculptures">Sculptures</a>
-	<a href="crafts.jsp" name="crafts">Crafts</a>
-	 </div>
+	
 </body>
 </html> 
