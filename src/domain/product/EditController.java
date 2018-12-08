@@ -18,9 +18,7 @@ public class EditController extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		Integer prodId = Integer.parseInt(request.getParameter("prodId"));
-		Integer catId = Integer.parseInt(request.getParameter("catId"));
 		request.setAttribute("prodId", prodId);
-		request.setAttribute("catId", catId);
 		RequestDispatcher rs = request.getRequestDispatcher("productedit.jsp");
 		rs.forward(request, response);
 	}

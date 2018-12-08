@@ -5,15 +5,12 @@ import java.sql.SQLException;
 import java.util.List;
 
 import db.DbManager;
-import db.dao.CategoryDao;
 import db.dao.DaoException;
 import db.dao.ProductDao;
 import db.dao.TransactionDao;
-import db.dao.impl.CategoryDaoImpl;
 import db.dao.impl.ProductDaoImpl;
 import db.dao.impl.TransactionDaoImpl;
 import db.services.TransactionPersistenceService;
-import domain.product.Category;
 import domain.product.Product;
 import domain.transaction.Transaction;
 
@@ -22,7 +19,6 @@ public class TransactionPersistenceServiceImpl implements TransactionPersistence
 	private DbManager db = DbManager.getInstance();
 	private TransactionDao trxnDao = TransactionDaoImpl.getInstance();
 	private ProductDao prodDao = ProductDaoImpl.getInstance();
-	private CategoryDao catDao = CategoryDaoImpl.getInstance();
 
 	private static TransactionPersistenceService instance;
 	
@@ -69,10 +65,6 @@ public class TransactionPersistenceServiceImpl implements TransactionPersistence
 			Transaction trxn = trxnDao.retrieve(connection, trxnId);
 
 			List<Product> prods = prodDao.retrieveByTransaction(connection, trxnId);
-			for (Product prod : prods) {
-				Category prodCat = catDao.retrieveByProduct(connection, prod.getProdId());
-				prod.setCategory(prodCat);
-			}
 			trxn.setProducts(prods);
 
 			connection.commit();
@@ -99,10 +91,6 @@ public class TransactionPersistenceServiceImpl implements TransactionPersistence
 
 			for (Transaction trxn : trxns) {
 				List<Product> prods = prodDao.retrieveByTransaction(connection, trxn.getTrxnId());
-				for (Product prod : prods) {
-					Category prodCat = catDao.retrieveByProduct(connection, prod.getProdId());
-					prod.setCategory(prodCat);
-				}
 				trxn.setProducts(prods);
 			}
 

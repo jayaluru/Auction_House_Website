@@ -12,4 +12,5 @@ public interface ProductPersistenceService {
 
 	public List<Product> retrieveAll() throws SQLException, DaoException;
 	
+	public Product retrieveCurrrentAuctionProduct() throws SQLException, DaoException;
 }

@@ -5,27 +5,20 @@ import java.sql.SQLException;
 import java.util.List;
 
 import db.DbManager;
-import db.dao.CartDao;
-import db.dao.CategoryDao;
 import db.dao.DaoException;
 import db.dao.InventoryDao;
 import db.dao.ProductCategoryDao;
 import db.dao.ProductDao;
-import db.dao.impl.CartDaoImpl;
-import db.dao.impl.CategoryDaoImpl;
 import db.dao.impl.InventoryDaoImpl;
 import db.dao.impl.ProductDaoImpl;
 import db.services.ProductCategoryPersistenceService;
-import domain.product.Category;
 import domain.product.Product;
 
 public abstract class AbstractProductCategoryPersistenceService<T extends Product> implements ProductCategoryPersistenceService<T> {
 
 	private DbManager db = DbManager.getInstance();
 	private InventoryDao inventoryDao = InventoryDaoImpl.getInstance();
-	private CartDao cartDao = CartDaoImpl.getInstance();
 	private ProductDao prodDao = ProductDaoImpl.getInstance();
-	private CategoryDao catDao = CategoryDaoImpl.getInstance();
 	private ProductCategoryDao<T> prodCatDao;
 	
 	protected AbstractProductCategoryPersistenceService(ProductCategoryDao<T> prodCatDao) {
@@ -66,10 +59,6 @@ public abstract class AbstractProductCategoryPersistenceService<T extends Produc
 			connection.setAutoCommit(false);
 
 			List<T> pcs = prodCatDao.retrieveAll(connection);
-			for (Product prod : pcs) {
-				Category prodCat = catDao.retrieveByProduct(connection, prod.getProdId());
-				prod.setCategory(prodCat);
-			}
 			connection.commit();
 			return pcs;
 		} catch (Exception ex) {
@@ -93,10 +82,6 @@ public abstract class AbstractProductCategoryPersistenceService<T extends Produc
 			connection.setAutoCommit(false);
 
 			T pc = prodCatDao.retrieve(connection, prodId);
-			if (pc != null) {
-				Category prodCat = catDao.retrieveByProduct(connection, pc.getProdId());
-				pc.setCategory(prodCat);
-			}
 			
 			connection.commit();
 			return pc;
@@ -149,7 +134,6 @@ public abstract class AbstractProductCategoryPersistenceService<T extends Produc
 		try {
 			connection.setAutoCommit(false);
 			
-			cartDao.removeProductFromAllCarts(connection, product.getProdId());
 			// TODO consider moving this to inventoryDao from prodDao.
 			Integer invnId = prodDao.retrieveInventoryId(connection, product);
 			inventoryDao.removeProduct(connection, product.getProdId(), invnId);

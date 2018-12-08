@@ -43,7 +43,6 @@ public class LoginController extends HttpServlet {
 					request.getSession().setAttribute("name", user.getName());
 					request.getSession().setAttribute("userId", user.getUserId());
 					request.getSession().setAttribute("invnId", user.getInventory().getInvnId());
-					request.getSession().setAttribute("cartId", user.getCart().getCartId());
 					redirect = "home.jsp";
 					message = "Logged in!";
 				} else {

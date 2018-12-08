@@ -8,7 +8,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -21,8 +24,8 @@ public class ProductDaoImpl implements ProductDao {
 
 	private static final String createQuery = 
 			"INSERT INTO "
-			+ "PRODUCT (CATID, NAME, DESCRIPTION, PRICE, ISSOLD,PHOTO) "
-			+ "VALUES (?, ?, ?, ?, ?, ?)";
+			+ "PRODUCT (NAME, DESCRIPTION, PRICE, ISSOLD,PHOTO) "
+			+ "VALUES (?, ?, ?, ?, ?)";
 		
 	private static final String retrieveQuery = 
 			"SELECT "
@@ -90,7 +93,13 @@ public class ProductDaoImpl implements ProductDao {
 			+ "FROM INVENTORYPRODUCT ip "
 			+ "JOIN INVENTORY i ON ip.INVNID = i.INVNID "
 			+ "WHERE ip.PRODID = ? ";
-
+	
+	private static final String retrieveProductByDate = 
+			"SELECT "
+			+ "p.PRODID, p.NAME, p.DESCRIPTION, p.PRICE, p.ISSOLD, p.PHOTO "
+			+ "FROM PRODUCT p "
+			+ "WHERE p.bidDate = ? order by p.productAddedTime desc";
+	
 	private static ProductDao instance;
 	
 	private ProductDaoImpl() {
@@ -115,11 +124,10 @@ public class ProductDaoImpl implements ProductDao {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		try {
 			statement = connection.prepareStatement(createQuery, Statement.RETURN_GENERATED_KEYS);
-			statement.setInt(1, product.getCategory().getCatId());
-			statement.setString(2, product.getName());
-			statement.setString(3, product.getDescription());
-			statement.setDouble(4, product.getPrice());
-			statement.setBoolean(5, product.isSold());
+			statement.setString(1, product.getName());
+			statement.setString(2, product.getDescription());
+			statement.setDouble(3, product.getPrice());
+			statement.setBoolean(4, product.isSold());
 			try {
 				ImageIO.write(product.getImage(), "jpg", baos);
 				baos.flush();
@@ -435,6 +443,55 @@ public class ProductDaoImpl implements ProductDao {
 			Integer sellerId = rs.getInt(1);
 			return sellerId;
 			
+		} finally {
+			if (statement != null && !statement.isClosed()) {
+				statement.close();
+			}
+			if (rs != null && !rs.isClosed()) {
+				rs.close();
+			}
+		}
+	}
+	
+	@Override
+	public Product retrieveCurrrentAuctionProduct(Connection connection) throws SQLException, DaoException {
+		PreparedStatement statement = null;
+		ResultSet rs = null;
+		try {
+			statement = connection.prepareStatement(retrieveProductByDate);
+			statement.setDate(1, new java.sql.Date(System.currentTimeMillis()));
+			rs = statement.executeQuery();
+			
+			ArrayList<Product> products = new ArrayList<Product>();
+			while (rs.next()) {
+				Product product = buildProduct(rs);
+				products.add(product);
+			}
+			
+			if(products.size()==0) {
+				return null;
+			}
+			
+			//Fixed Time of 8-6
+			double timePerTask = 36000000.0/products.size();
+			
+			Calendar c = Calendar.getInstance();
+			long now = c.getTimeInMillis();
+			c.set(Calendar.HOUR_OF_DAY, 8);
+			c.set(Calendar.MINUTE, 0);
+			c.set(Calendar.SECOND, 0);
+			c.set(Calendar.MILLISECOND, 0);
+			long passed = c.getTimeInMillis();
+			
+			int i=0;
+			for(;i<products.size();i++) {
+				passed+=timePerTask;
+				if(passed>now) {
+					break;
+				}
+			}
+			
+			return products.get(i);
 		} finally {
 			if (statement != null && !statement.isClosed()) {
 				statement.close();

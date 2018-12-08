@@ -14,7 +14,6 @@ public class User {
 	private String description;
 	private boolean active;
 	private Inventory inventory;
-	private Cart cart;
 	private CreditCard creditCard;
 	private List<Transaction> transactions;
 
@@ -68,14 +67,6 @@ public class User {
 
 	public void setInventory(Inventory inventory) {
 		this.inventory = inventory;
-	}
-
-	public Cart getCart() {
-		return cart;
-	}
-
-	public void setCart(Cart cart) {
-		this.cart = cart;
 	}
 
 	public List<Transaction> getTransactions() {
