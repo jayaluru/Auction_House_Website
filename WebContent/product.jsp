@@ -85,7 +85,7 @@
 			<td><%= prod.getDescription() %></td>
 			<td><%= prod.getPrice() %></td>
 			<%
-				if (productBid.getUserId()!=null){
+				if (productBid!=null && productBid.getUserId()!=null){
 			%>
 			<td><%= productBid.getPrice() %></td>
 			<td><%= productBid.getUserId() %></td>
