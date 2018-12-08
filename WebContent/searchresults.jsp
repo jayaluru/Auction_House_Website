@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ page import="java.util.*" %>    
+    
+<%@ page import="java.util.*" %>
 <%@ page import="domain.product.*" %>
 <%@ page import="domain.product.Product" %>
 <%@page import="db.services.*"%>
@@ -12,6 +13,27 @@
 <head>
 <meta charset="ISO-8859-1">
 <title>Search Results</title>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.12/js/jquery.dataTables.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.12/js/dataTables.bootstrap.min.js"></script>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.12/css/dataTables.bootstrap.min.css" rel="stylesheet"/>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"/>
+<link rel="stylesheet" href="index.css"/>
+
+
+    <script type="text/javascript">
+    $(document).ready(function () {
+        $("#ProductTable").dataTable({
+            "sPaginationType": "full_numbers",
+            "bJQueryUI": true
+        });
+    });
+    </script>
+
 </head>
 <style>
 .content {
@@ -31,7 +53,6 @@
 		return;
 	}
 	Integer invnId = (Integer) sess.getAttribute("invnId");
-	Integer cartId = (Integer) sess.getAttribute("cartId");
 	String name = (String) sess.getAttribute("name");
 	List<Product> products = (List<Product>) request.getAttribute("searchResults");
 	String searchCriteria = (String) request.getAttribute("searchCriteria");
@@ -59,8 +80,8 @@
 	if (products.size() > 0){
 	
    	%>  
-	<table border="1" style="margin-top: 20px; margin-right: 20px; margin-left: 29px; border-top-width: 2px;">
-     	<tr>
+	<table id="ProductTable" class="table table-striped table-bordered table-hover" cellspacing="0" width="100%">
+		<tr>
 			<th>Image</th>
        		<th>Name</th>
        		<th>Description</th>
@@ -75,13 +96,9 @@
 			<td><%= prod.getDescription() %></td>
 			<td><%= prod.getPrice() %></td>
 			<td>
-				<form name="detailsform" action="DetailsController" method="post">
-					<input type="hidden" name="prodId" value="<%= prod.getProdId().toString() %>">
-					<input class="demo" type="submit" name="ViewDetails" value = "View Details" style="left: 460px;">
-				</form>			
 				<form name="profileform" action="ProfileController" method="post">
 						<input type="hidden" name="prodId" value="<%= prod.getProdId().toString() %>">
-						<input class="demo" type="submit" name="UserProfile" value = "View User" style="left: 460px;">
+						<input class="demo btn btn-primary" type="submit" name="UserProfile" value = "View User" style="left: 460px;">
 				</form>
 			</td>
 			</tr>
