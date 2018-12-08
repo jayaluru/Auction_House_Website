@@ -69,16 +69,28 @@
 			<th>Name</th>
 			<th>Description</th>
 			<th>Price</th>
+			<%
+				if (productBid.getUserId()!=null){
+			%>
 			<th>Highest Bid</th>
 			<th>Highest Bid User</th>
+			<%
+				}
+			%>
 		</tr>
 		<tr>			
 			<td><img src="data:image/jpeg;base64, <%= prod.getEncodedImage() %> " height="100" width="100" alt="bye"/></td>
 			<td><%= prod.getName() %></td>
 			<td><%= prod.getDescription() %></td>
 			<td><%= prod.getPrice() %></td>
+			<%
+				if (productBid.getUserId()!=null){
+			%>
 			<td><%= productBid.getPrice() %></td>
 			<td><%= productBid.getUserId() %></td>
+			<%
+				}
+			%>
 		</tr>
 	</table>
 	<br>
