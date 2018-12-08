@@ -23,7 +23,8 @@
 	<div class="menu" align = "Center">
 		<a href="home.jsp" name="menuhome">Home</a>
 		<a href="product.jsp" name="menuproduct">Product</a>
-		<a href="inventory.jsp" name="menuinventory">Inventory</a>
+		<a href="searchItemsDateRange.jsp" name="menuinventory">Advanced Search</a>
+		<a href="inventory.jsp" name="advancedsearch">Inventory</a>
 		<a href="transactions.jsp" name="menutransactions">Transactions</a>
 		<a href="profile.jsp" name="menuprofile">Profile</a>
 		<a href="logout.jsp" name="menulogout">Logout</a>
