@@ -9,6 +9,32 @@ CREATE SCHEMA IF NOT EXISTS `auctionwebsite` DEFAULT CHARACTER SET utf8 ;
 
 USE `auctionwebsite` ;
 
+-- -----------------------------------------------------
+-- Table `auctionwebsite`.`Admin`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `auctionwebsite`.`Admin` (
+  `userId` INT NOT NULL AUTO_INCREMENT,
+  `username` VARCHAR(16) NOT NULL,
+  `password` VARCHAR(32) NOT NULL,
+  `name` VARCHAR(100) NOT NULL,
+  `address` VARCHAR(255) NOT NULL,
+  `description` VARCHAR(2000) NOT NULL,
+  PRIMARY KEY (`userId`),
+  UNIQUE INDEX `Admin_userId_UNIQUE` (`userId` ASC),
+  UNIQUE INDEX `Admin_username_UNIQUE` (`username` ASC));
+
+  
+-- -----------------------------------------------------
+-- Table `auctionwebsite`.`AuctionTimings`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `auctionwebsite`.`AuctionTimings` (
+  `maxItems` INT NOT NULL,
+  `startTime` VARCHAR(5) NOT NULL,
+  `endTime` VARCHAR(5) NOT NULL,
+  `duration` VARCHAR(5) NOT NULL,
+  PRIMARY KEY (`maxItems`,`startTime`,`endTime`));
+
+
 
 -- -----------------------------------------------------
 -- Table `auctionwebsite`.`User`
@@ -21,6 +47,8 @@ CREATE TABLE IF NOT EXISTS `auctionwebsite`.`User` (
   `address` VARCHAR(255) NOT NULL,
   `description` VARCHAR(2000) NOT NULL,
   `active` boolean NOT NULL,
+  `securityQuestion` VARCHAR(100) NOT NULL,
+  `securityAnswer` VARCHAR(100) NOT NULL,
   PRIMARY KEY (`userId`),
   UNIQUE INDEX `User_userId_UNIQUE` (`userId` ASC),
   UNIQUE INDEX `User_username_UNIQUE` (`username` ASC));
@@ -54,7 +82,8 @@ CREATE TABLE IF NOT EXISTS `auctionwebsite`.`Product` (
   `price` DOUBLE NOT NULL,
   `isSold` TINYINT NOT NULL,
   `photo` MEDIUMBLOB NOT NULL,
-  `productAddedTime` TIMESTAMP NOT NULL,
+  `bidStartTime` VARCHAR(5) NOT NULL,
+  `bidEndTime` VARCHAR(5) NOT NULL,
   `bidDate` DATE NOT NULL,
   PRIMARY KEY (`prodId`),
   UNIQUE INDEX `Product_prodId_UNIQUE` (`prodId` ASC));
@@ -67,7 +96,6 @@ CREATE TABLE IF NOT EXISTS `auctionwebsite`.`ProductBid` (
   `prodId` INT NOT NULL,
   `userId` INT NOT NULL,
   `bid` DOUBLE NOT NULL,
-  PRIMARY KEY (`prodId`,`userId`),
   CONSTRAINT `fk_ProuctBid_User_userId`
     FOREIGN KEY (`userId`)
     REFERENCES `auctionwebsite`.`User` (`userId`)
@@ -153,6 +181,10 @@ CREATE TABLE IF NOT EXISTS `auctionwebsite`.`TransactionProduct` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
 
+
+INSERT INTO `auctionwebsite`.`AuctionTimings` VALUES (40, '08:00', '06:00', 15);
+
+INSERT INTO `auctionwebsite`.`Admin` VALUES (10000, 'kalyan', 'kalyan', 'kalyan', 'dallas', 'Website Owner');
 
 
 SET SQL_MODE=@OLD_SQL_MODE;
