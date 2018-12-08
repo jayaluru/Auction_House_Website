@@ -34,8 +34,7 @@
 	%>
 	<div class="menu" align = "Center">
 		<a href="home.jsp" name="menuhome">Home</a>
-		<a href="product.jsp" name="menucategory">Product</a>
-		<a href="cart.jsp" name="menucart">Cart</a>
+		<a href="product.jsp" name="menuproduct">Product</a>
 		<a href="inventory.jsp" name="menuinventory">Inventory</a>
 		<a href="transactions.jsp" name="menutransactions">Transactions</a>
 		<a href="profile.jsp" name="menuprofile">Profile</a>
@@ -49,6 +48,7 @@
 		</div>
 	</div>
  	<hr>
+<<<<<<< HEAD
 	
 	<%
 	ProductPersistenceService productService = ProductPersistenceServiceImpl.getInstance();
@@ -79,6 +79,11 @@
 	<% } else {%>
 		<p> No products available for bidding. </p>
 	<%}%>
+=======
+	<h3 align="center" style="color:brown;"> Choose a category. </h3>
+	<h4 align="left"> Select from a list of product categories: </h4>
+	<hr>
+>>>>>>> branch 'master' of https://github.com/jayaluru/Auction_House_Website.git
 	
 </body>
 </html> 
