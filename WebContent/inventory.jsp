@@ -50,12 +50,7 @@
 		</div>
 	</div>
  	<hr>
- 	<h4>Inventory:</h4>
-	<form>
-		<a name = "Painting" href="newproduct.jsp?catId=1">Add a painting</a>
-		<a name = "Sculpture" href="newproduct.jsp?catId=2">Add a sculpture</a>
-		<a name = "Craft" href="newproduct.jsp?catId=3">Add a craft</a>
-	</form>
+ 	
  	<h4>Total Earnings:</h4>
  	<%
 	InventoryPersistenceService invnService = InventoryPersistenceServiceImpl.getInstance();
