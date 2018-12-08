@@ -71,7 +71,7 @@
 			<th>Description</th>
 			<th>Price</th>
 			<%
-				if (productBid.getUserId()!=null){
+				if (productBid!=null && productBid.getUserId()!=null){
 			%>
 			<th>Highest Bid</th>
 			<th>Highest Bid User</th>
