@@ -50,6 +50,10 @@
 	</div>
  	<hr>
  	
+ 	<form>
+		<a name = "Product" href="newproduct.jsp">Add a product</a>
+	</form>
+ 	
  	<h4>Total Earnings:</h4>
  	<%
 	InventoryPersistenceService invnService = InventoryPersistenceServiceImpl.getInstance();
@@ -71,23 +75,8 @@
 		<col width="130">
 	  	<col width="80">
 		<tr>
-			<th>Sale Category</th>
-			<th>Amount</th>
-		</tr>
-		<tr>
-			<td>Painting</td>
-		 	<td><%= paintTotal %></td>
-		</tr>
-		<tr>
-			<td>Sculpture</td>
-		 	<td><%= sculptTotal %></td>
-		</tr>
-		<tr>
-			<td>Craft</td>
-			<td><%= craftTotal %></td></tr>
-		<tr>
-		<td align = "right"><b>Total</b></td>
-		<td align = "right"><b><%= total %></b></td>
+			<td>Total Profit : </td>
+		 	<td><%= total %></td>
 		</tr>
 	</table>
  	<h4>Products in Inventory:</h4>
@@ -115,13 +104,9 @@
 				<td><%= prod.isSold() %></td>
 				
 				<td>
-					<form name="detailsform" action="DetailsController" method="post">
+					<form name="deleteform" action="DeleteController" method="post">
 						<input type="hidden" name="prodId" value="<%= prod.getProdId().toString() %>">
-						<input class="demo" type="submit" name="ViewDetails" value = "View Details" style="left: 460px;">
-					</form>	
-					<form name="editform" action="EditController" method="post">
-						<input type="hidden" name="prodId" value="<%= prod.getProdId().toString() %>">
-						<input class="demo" type="submit" <%=prod.isSold() ? "disabled=\"\"" : "" %> name="EditDetails" value = "Edit Details" style="left: 460px;">
+						<input class="demo" type="submit" <%=prod.isSold() ? "disabled=\"\"" : "" %> name="Delete Product" value = "Delete Product" style="left: 460px;">
 					</form>
 				</td>
 			</tr>

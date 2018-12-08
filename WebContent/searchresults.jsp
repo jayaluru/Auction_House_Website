@@ -76,7 +76,6 @@
 			<td>
 				<form name="detailsform" action="DetailsController" method="post">
 					<input type="hidden" name="prodId" value="<%= prod.getProdId().toString() %>">
-					<input type="hidden" name="catId" value="<%= prod.getCategory().getCatId().toString() %>">
 					<input class="demo" type="submit" name="ViewDetails" value = "View Details" style="left: 460px;">
 				</form>			
 				<form name="profileform" action="ProfileController" method="post">

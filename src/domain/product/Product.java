@@ -3,6 +3,7 @@ package domain.product;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.sql.Date;
 import java.util.Base64;
 
 import javax.imageio.ImageIO;
@@ -15,6 +16,9 @@ public class Product {
 	private double price;
 	private boolean isSold;
 	private BufferedImage image;
+	private String bidStartTime;
+	private String bidEndTime;
+	private Date bidDate;
 
 	public Integer getProdId() {
 		return prodId;
@@ -88,6 +92,30 @@ public class Product {
 			}
 		}
 		return encodedImage;
+	}
+
+	public String getBidStartTime() {
+		return bidStartTime;
+	}
+
+	public void setBidStartTime(String bidStartTime) {
+		this.bidStartTime = bidStartTime;
+	}
+
+	public String getBidEndTime() {
+		return bidEndTime;
+	}
+
+	public void setBidEndTime(String bidEndTime) {
+		this.bidEndTime = bidEndTime;
+	}
+
+	public Date getBidDate() {
+		return bidDate;
+	}
+
+	public void setBidDate(Date bidDate) {
+		this.bidDate = bidDate;
 	}
 
 }

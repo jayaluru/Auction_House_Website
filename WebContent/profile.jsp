@@ -102,7 +102,7 @@
 			double balance = soldTotal - trxnTotal;
 			%> 
 			<tr><td>Balance:</td><td><%=balance%></td></tr>
-			<tr><td>Deactivate?</td>
+			<tr><td>Deactivate</td>
 				<td>
 					<form name="deactivateForm" action="DeactivateController" method="post">
 						<input class="demo" type="submit" name="Deactivate" value = "Deactivate" style="left: 460px;">
@@ -138,7 +138,6 @@
 				<td>
 					<form name="detailsform" action="DetailsController" method="post">
 						<input type="hidden" name="prodId" value="<%= prod.getProdId().toString() %>">
-						<input type="hidden" name="catId" value="<%= prod.getCategory().getCatId().toString() %>">
 						<input class="demo" type="submit" name="ViewDetails" value = "View Details" style="left: 460px;">
 					</form>	
 				</td>

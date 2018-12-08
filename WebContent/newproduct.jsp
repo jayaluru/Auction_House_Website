@@ -1,18 +1,15 @@
 <%@ page import="java.util.*" %>    
-<%@page import="domain.user.Inventory"%>
-<%@page import="db.services.ProductPersistenceService"%>
-<%@page import="db.services.impl.ProductPersistenceServiceImpl"%>
-<%@page import="domain.product.Product"%>
-<%@page import="java.sql.*"%>
+<%@ page import="java.sql.*"%>
+<%@ page import="java.sql.Date" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
+	<script type="text/javascript" src="script.js"></script>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<title>Product</title>
+	<title>New Product</title>
 </head>
-
 <style>
 .content {
     max-width: 1000px;
@@ -21,7 +18,7 @@
     padding: 50px;
     line-height: 0.3;
 }
-</style>
+</style> 
 <body>
 	<% 
 	HttpSession sess = request.getSession(true);
@@ -31,6 +28,7 @@
 		return;
 	}
 	Integer invnId = (Integer) sess.getAttribute("invnId");
+	Integer cartId = (Integer) sess.getAttribute("cartId");
 	String name = (String) sess.getAttribute("name");
 	%>
 	<div class="menu" align = "Center">
@@ -50,41 +48,24 @@
 	</div>
  	<hr>
 	
-	<%
-	ProductPersistenceService productService = ProductPersistenceServiceImpl.getInstance();
-	Product prod = productService.retrieveCurrrentAuctionProduct();
- 	%>
+	<h4 align="left"> Create Painting: </h4>
+	<form name="newproductform" enctype='multipart/form-data' action="ProductController" method="post" onsubmit="return productValidate()">
 	
-	<h4>Products in Inventory:</h4>
-	<%
-	
-	if (prod!=null){
-	
-	%>
-	<table border="1" style="margin-top: 20px; margin-right: 20px; margin-left: 29px; border-top-width: 2px;">
-		<tr>
-			<th>Image</th>
-			<th>Name</th>
-			<th>Description</th>
-			<th>Price</th>
-		</tr>
-		<tr>			
-			<td><img src="data:image/jpeg;base64, <%= prod.getEncodedImage() %> " height="100" width="100" alt="bye"/></td>
-			<td><%= prod.getName() %></td>
-			<td><%= prod.getDescription() %></td>
-			<td><%= prod.getPrice() %></td>
-		</tr>
-	</table>
-	
-	<form name="bidform" action="BidController" method="post">
-		<input type="text" name="bid" id="bid">
-		<input type="submit" name="submit" value="Make Bid" >
+		Name: <input type="text" name="name" id="name">
+		<br>
+		Description: <input type="text" name="description" id="description">
+		<br>
+		Bid Price: <input type="number" min="0" step="0.01" name="price" id="price">
+		<br>		
+		Upload an Image: <input type="file" name="file" >
+		<br>
+		Bidding Date: <input type="date" name="biddate" id="biddate" value='<%=new Date(System.currentTimeMillis())%>'>
+		<br>
+		Bid Start Duration: <input type="text" name="startbid" id="startbid">
+		<br>
+		Bid End Duration: <input type="text" name="endbid" id="endbid">
+		<br>
+		<input type="submit" name="submit" value="create" >
 	</form>
-	
-	<br>
-	<% } else {%>
-		<p> No products available for bidding. </p>
-	<%}%>
-	
 </body>
 </html> 

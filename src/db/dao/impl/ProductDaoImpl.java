@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.sql.Blob;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,7 +12,6 @@ import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -19,13 +19,23 @@ import javax.imageio.ImageIO;
 import db.dao.DaoException;
 import db.dao.ProductDao;
 import domain.product.Product;
+import domain.product.ProductBid;
 
 public class ProductDaoImpl implements ProductDao {
+	private static final String placeBid = 
+			"INSERT INTO "
+			+ "PRODUCT (prodId, userId, bid) "
+			+ "VALUES (?, ?, ?)";
+	
+	private static final String findHighestBid = 
+			"select p.prodId, p.userId, p.bid from ProductBid p where "
+			+ "p.bid = (select max(p1.bid) from ProductBid p1 where p1.prodId = p.prodId) "
+			+ "and p.prodId = ?";
 
 	private static final String createQuery = 
 			"INSERT INTO "
-			+ "PRODUCT (NAME, DESCRIPTION, PRICE, ISSOLD,PHOTO) "
-			+ "VALUES (?, ?, ?, ?, ?)";
+			+ "PRODUCT (NAME, DESCRIPTION, PRICE, ISSOLD,PHOTO,bidStartTime,bidEndTime,bidDate) "
+			+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 		
 	private static final String retrieveQuery = 
 			"SELECT "
@@ -96,9 +106,9 @@ public class ProductDaoImpl implements ProductDao {
 	
 	private static final String retrieveProductByDate = 
 			"SELECT "
-			+ "p.PRODID, p.NAME, p.DESCRIPTION, p.PRICE, p.ISSOLD, p.PHOTO "
-			+ "FROM PRODUCT p "
-			+ "WHERE p.bidDate = ? order by p.productAddedTime desc";
+			+ "p.PRODID, p.NAME, p.DESCRIPTION, p.PRICE, p.ISSOLD, p.PHOTO, "
+			+ "p.bidStartTime, p.bidEndTime FROM PRODUCT p "
+			+ "WHERE p.bidDate = ?";
 	
 	private static ProductDao instance;
 	
@@ -111,6 +121,60 @@ public class ProductDaoImpl implements ProductDao {
 			instance = new ProductDaoImpl();
 		}
 		return instance;
+	}
+	
+	
+	@Override
+	public void createBid(Connection connection, ProductBid productBid) throws SQLException, DaoException {
+		if (productBid.getProdId() == null) {
+			throw new DaoException("ProdId must not be null!");
+		}
+
+		PreparedStatement statement = null;
+		ResultSet rs = null;
+		try {
+			statement = connection.prepareStatement(placeBid, Statement.RETURN_GENERATED_KEYS);
+			statement.setInt(1, productBid.getProdId());
+			statement.setInt(2, productBid.getUserId());
+			statement.setDouble(3, productBid.getPrice());
+			statement.executeUpdate();
+		} finally {
+			if (rs != null && !rs.isClosed()) {
+				rs.close();
+			}
+			if (statement != null && !statement.isClosed()) {
+				statement.close();
+			}
+		}
+	}
+	
+	
+	@Override
+	public ProductBid getHighestBid(Connection connection, Integer prodId) throws SQLException, DaoException {
+		if (prodId == null) {
+			throw new DaoException("ProdId must not be null!");
+		}
+		
+		PreparedStatement statement = null;
+		ResultSet rs = null;
+		try {
+			statement = connection.prepareStatement(findHighestBid);
+			statement.setInt(1, prodId);
+			rs = statement.executeQuery();
+			boolean found = rs.next();
+			if (!found) {
+				return null;
+			}
+			ProductBid productBid = buildProductBid(rs);
+			return productBid;
+		} finally {
+			if (statement != null && !statement.isClosed()) {
+				statement.close();
+			}
+			if (rs != null && !rs.isClosed()) {
+				rs.close();
+			}
+		}
 	}
 	
 	@Override
@@ -128,6 +192,9 @@ public class ProductDaoImpl implements ProductDao {
 			statement.setString(2, product.getDescription());
 			statement.setDouble(3, product.getPrice());
 			statement.setBoolean(4, product.isSold());
+			statement.setString(6, product.getBidStartTime());
+			statement.setString(7, product.getBidEndTime());
+			statement.setDate(8, product.getBidDate());
 			try {
 				ImageIO.write(product.getImage(), "jpg", baos);
 				baos.flush();
@@ -138,7 +205,7 @@ public class ProductDaoImpl implements ProductDao {
 			byte[] imageBytes = baos.toByteArray();
 			Blob blob = connection.createBlob();
 			blob.setBytes(1, imageBytes);
-			statement.setBlob(6, blob);
+			statement.setBlob(5, blob);
 			statement.executeUpdate();
 			rs = statement.getGeneratedKeys();
 			rs.next();
@@ -265,33 +332,7 @@ public class ProductDaoImpl implements ProductDao {
 			}
 		}
 	}
-
-	@Override
-	public List<Product> retrieveByCart(Connection connection, Integer cartId) throws SQLException, DaoException {
-		if (cartId == null) {
-			throw new DaoException("CartId cannot be null!");
-		}
-		PreparedStatement statement = null;
-		ResultSet rs = null;
-		try {
-			statement = connection.prepareStatement(retrieveByCartQuery);
-			statement.setInt(1, cartId);
-			rs = statement.executeQuery();
-			ArrayList<Product> products = new ArrayList<Product>();
-			while (rs.next()) {
-				Product product = buildProduct(rs);
-				products.add(product);
-			}
-			return products;
-		} finally {
-			if (statement != null && !statement.isClosed()) {
-				statement.close();
-			}
-			if (rs != null && !rs.isClosed()) {
-				rs.close();
-			}
-		}
-	}
+	
 
 	@Override
 	public List<Product> retrieveByInventory(Connection connection, Integer invnId) throws SQLException, DaoException {
@@ -379,6 +420,24 @@ public class ProductDaoImpl implements ProductDao {
 		}
 	}
 
+	private static Product buildProduct1(ResultSet rs) throws SQLException {
+		// p.PRODID, p.NAME, p.DESCRIPTION, p.PRICE, p.ISSOLD
+		Product product = new Product();
+		product.setProdId(rs.getInt(1));
+		product.setName(rs.getString(2));
+		product.setDescription(rs.getString(3));
+		product.setPrice(rs.getDouble(4));
+		product.setSold(rs.getBoolean(5));
+		product.setBidStartTime(rs.getString(7));
+		product.setBidEndTime(rs.getString(8));
+		try {
+			product.setImage(ImageIO.read(rs.getBlob(6).getBinaryStream()));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}		
+		return product;
+	}
+	
 	private static Product buildProduct(ResultSet rs) throws SQLException {
 		// p.PRODID, p.NAME, p.DESCRIPTION, p.PRICE, p.ISSOLD
 		Product product = new Product();
@@ -393,6 +452,16 @@ public class ProductDaoImpl implements ProductDao {
 			e.printStackTrace();
 		}		
 		return product;
+	}
+	
+	private static ProductBid buildProductBid(ResultSet rs) throws SQLException {
+		// p.PRODID, p.NAME, p.DESCRIPTION, p.PRICE, p.ISSOLD
+		ProductBid productBid = new ProductBid();
+		productBid.setProdId(rs.getInt(1));
+		productBid.setUserId(rs.getInt(2));
+		productBid.setPrice(rs.getDouble(3));
+		
+		return productBid;
 	}
 
 	@Override
@@ -459,39 +528,39 @@ public class ProductDaoImpl implements ProductDao {
 		ResultSet rs = null;
 		try {
 			statement = connection.prepareStatement(retrieveProductByDate);
-			statement.setDate(1, new java.sql.Date(System.currentTimeMillis()));
+			Date date = new Date(System.currentTimeMillis());
+			statement.setDate(1, date);
 			rs = statement.executeQuery();
+			
+			Calendar rightNow = Calendar.getInstance();
+			String h = rightNow.get(Calendar.HOUR_OF_DAY)+"";
+			String m = rightNow.get(Calendar.MINUTE)+"";
+			
+			if(h.length()==1) {
+				h="0"+h;
+			}
+			
+			if(m.length()==1) {
+				m="0"+m;
+			}
+			
+			String h_m = h + ":" + m;
 			
 			ArrayList<Product> products = new ArrayList<Product>();
 			while (rs.next()) {
-				Product product = buildProduct(rs);
-				products.add(product);
-			}
-			
-			if(products.size()==0) {
-				return null;
-			}
-			
-			//Fixed Time of 8-6
-			double timePerTask = 36000000.0/products.size();
-			
-			Calendar c = Calendar.getInstance();
-			long now = c.getTimeInMillis();
-			c.set(Calendar.HOUR_OF_DAY, 8);
-			c.set(Calendar.MINUTE, 0);
-			c.set(Calendar.SECOND, 0);
-			c.set(Calendar.MILLISECOND, 0);
-			long passed = c.getTimeInMillis();
-			
-			int i=0;
-			for(;i<products.size();i++) {
-				passed+=timePerTask;
-				if(passed>now) {
-					break;
+				Product product = buildProduct1(rs);
+//				System.out.println(h_m);
+//				System.out.println(product.getBidStartTime());
+//				System.out.println(product.getBidStartTime());
+//				System.out.println(h_m.compareTo(product.getBidStartTime())>0);
+//				System.out.println(h_m.compareTo(product.getBidStartTime())<0);
+				System.out.println();
+				if(h_m.compareTo(product.getBidStartTime())>0 && h_m.compareTo(product.getBidEndTime())<0) {
+					return product;
 				}
 			}
 			
-			return products.get(i);
+			return null;
 		} finally {
 			if (statement != null && !statement.isClosed()) {
 				statement.close();
