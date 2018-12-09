@@ -16,4 +16,14 @@ public class ForSaleSearchStrategy implements SearchStrategy {
 		return filtered;
 	}
 
+	@Override
+	public List<Product> filter2(List<Product> products) {
+		ArrayList<Product> filtered = new ArrayList<>(products.size());
+		for (Product prod : products) {
+			if (!prod.isSold()) {
+				filtered.add(prod);
+			}
+		}
+		return filtered;
+	}
 }

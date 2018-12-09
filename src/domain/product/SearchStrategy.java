@@ -6,4 +6,6 @@ public interface SearchStrategy {
 
 	List<Product> filter(List<Product> products);
 	
+	List<Product> filter2(List<Product> products);
+	
 }

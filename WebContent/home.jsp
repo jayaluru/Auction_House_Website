@@ -29,6 +29,7 @@
 	%>
 	<div class="menu" align = "Center">
 		<a href="home.jsp" name="menuhome">Home</a>
+		<a href="auctionschedule.jsp" name="menuauctionschedule">Auction Schedule</a>
 		<a href="product.jsp" name="menuproduct">Product</a>
 		<a href="inventory.jsp" name="menuinventory">Inventory</a>
 		<a href="searchItemsDateRange.jsp" name="menuinventory">Advanced Search</a>

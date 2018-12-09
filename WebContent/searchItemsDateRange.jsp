@@ -43,9 +43,9 @@
  		<br>
 		Search: <input type="text" name="searchCriteria" placeholder="Search..">
 		<br>
-		Start Date: <input type="date" name="expdate" value='<%=new Date(System.currentTimeMillis())%>'>
+		Start Date: <input type="date" name="startdate" value='<%=new Date(System.currentTimeMillis())%>'>
 		<br>
-		End Date: <input type="date" name="expdate" value='<%=new Date(System.currentTimeMillis())%>'>
+		End Date: <input type="date" name="enddate" value='<%=new Date(System.currentTimeMillis())%>'>
 		<br>
 		<br>
 		<input type="submit" name="searchSubmit" value="Go">
