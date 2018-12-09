@@ -29,12 +29,22 @@ public class ProductController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
 	private ProductPersistenceService productServieImpl = ProductPersistenceServiceImpl.getInstance();
-
+	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		HttpSession sess = request.getSession(true);
 		Integer invnId = (Integer) sess.getAttribute("invnId");
+		
+		if(request.getParameter("price") == null || request.getParameter("name") == null || 
+				request.getParameter("biddate") == null || request.getPart("file") == null ||
+				request.getParameter("price").equals("") || request.getParameter("name").equals("") || 
+				request.getParameter("biddate").equals("") || request.getPart("file").equals("")) {
+			request.setAttribute("message_newProduct",  "Please enter all values");
+			RequestDispatcher rs = request.getRequestDispatcher("newproduct.jsp");
+			rs.forward(request, response);
+			return;
+		}
 		
 		String name = request.getParameter("name");
 		String description = request.getParameter("description");
@@ -42,12 +52,27 @@ public class ProductController extends HttpServlet {
 		Date date = new Date(System.currentTimeMillis());
 		try {
 			date = new java.sql.Date(new SimpleDateFormat("yyyy-MM-dd").parse(request.getParameter("biddate")).getTime());
+			
+			if(new Date(System.currentTimeMillis()).toString().compareTo(date.toString())>=0) {
+				request.setAttribute("message_newProduct",  "Please enter a future date");
+				RequestDispatcher rs = request.getRequestDispatcher("newproduct.jsp");
+				rs.forward(request, response);
+				return;
+			}
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		String startbid = request.getParameter("startbid");
 		String endbid = request.getParameter("endbid");
+		
+		if(startbid == null) {
+			startbid = "";
+		}
+		
+		if(endbid == null) {
+			endbid = "";
+		}
 		
 		
 		// obtains the upload file part in this multipart request

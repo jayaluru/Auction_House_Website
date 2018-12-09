@@ -16,10 +16,12 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
+import db.dao.AdminTimingsDao;
 import db.dao.DaoException;
 import db.dao.ProductDao;
 import domain.product.Product;
 import domain.product.ProductBid;
+import domain.user.AuctionTimings;
 
 public class ProductDaoImpl implements ProductDao {
 	private static final String placeBid = 
@@ -39,25 +41,25 @@ public class ProductDaoImpl implements ProductDao {
 		
 	private static final String retrieveQuery = 
 			"SELECT "
-			+ "p.PRODID, p.NAME, p.DESCRIPTION, p.PRICE, p.ISSOLD,p.PHOTO "
+			+ "p.PRODID, p.NAME, p.DESCRIPTION, p.PRICE, p.ISSOLD,p.bidDate,p.PHOTO "
 			+ "FROM PRODUCT p "
 			+ "WHERE p.PRODID = ? ";
 
 	private static final String retrieveAllQuery = 
 			"SELECT "
-			+ "p.PRODID, p.NAME, p.DESCRIPTION, p.PRICE, p.ISSOLD,p.PHOTO "
+			+ "p.PRODID, p.NAME, p.DESCRIPTION, p.PRICE, p.ISSOLD,p.bidDate,p.PHOTO "
 			+ "FROM PRODUCT p ";
 	
 	private static final String retrieveByTransactionQuery = 
 			"SELECT "
-			+ "p.PRODID, p.NAME, p.DESCRIPTION, p.PRICE, p.ISSOLD, p.PHOTO "
+			+ "p.PRODID, p.NAME, p.DESCRIPTION, p.PRICE, p.ISSOLD, p.bidDate, p.PHOTO "
 			+ "FROM PRODUCT p "
 			+ "JOIN TRANSACTIONPRODUCT tp ON p.PRODID = tp.PRODID "
 			+ "WHERE tp.TRXNID = ? ";
 	
 	private static final String retrieveBySellerQuery = 
 			"SELECT "
-			+ "p.PRODID, p.NAME, p.DESCRIPTION, p.PRICE, p.ISSOLD, p.PHOTO "
+			+ "p.PRODID, p.NAME, p.DESCRIPTION, p.PRICE, p.ISSOLD, p.bidDate, p.PHOTO "
 			+ "FROM PRODUCT p "
 			+ "JOIN INVENTORYPRODUCT ip ON p.PRODID = ip.PRODID "
 			+ "JOIN INVENTORY i ON ip.INVNID = i.INVNID "
@@ -65,14 +67,14 @@ public class ProductDaoImpl implements ProductDao {
 
 	private static final String retrieveByCartQuery = 
 			"SELECT "
-			+ "p.PRODID, p.NAME, p.DESCRIPTION, p.PRICE, p.ISSOLD, p.PHOTO "
+			+ "p.PRODID, p.NAME, p.DESCRIPTION, p.PRICE, p.ISSOLD, p.bidDate, p.PHOTO "
 			+ "FROM PRODUCT p "
 			+ "JOIN CARTPRODUCT cp ON p.PRODID = cp.PRODID "
 			+ "WHERE cp.CARTID = ? ";
 
 	private static final String retrieveByInventoryQuery = 
 			"SELECT "
-			+ "p.PRODID, p.NAME, p.DESCRIPTION, p.PRICE, p.ISSOLD, p.PHOTO "
+			+ "p.PRODID, p.NAME, p.DESCRIPTION, p.PRICE, p.ISSOLD, p.bidDate, p.PHOTO "
 			+ "FROM PRODUCT p "
 			+ "JOIN INVENTORYPRODUCT ip ON p.PRODID = ip.PRODID "
 			+ "WHERE ip.INVNID = ? ";
@@ -83,6 +85,7 @@ public class ProductDaoImpl implements ProductDao {
 			+ "DESCRIPTION = ?, "
 			+ "PRICE = ?, "
 			+ "ISSOLD = ?, "
+			+ "bidDate = ?, "
 			+ "PHOTO = ? "
 			+ "WHERE PRODID = ? ";
 	
@@ -106,7 +109,7 @@ public class ProductDaoImpl implements ProductDao {
 	
 	private static final String retrieveProductByDate = 
 			"SELECT "
-			+ "p.PRODID, p.NAME, p.DESCRIPTION, p.PRICE, p.ISSOLD, p.PHOTO, "
+			+ "p.PRODID, p.NAME, p.DESCRIPTION, p.PRICE, p.ISSOLD, p.bidDate, p.PHOTO, "
 			+ "p.bidStartTime, p.bidEndTime FROM PRODUCT p "
 			+ "WHERE p.bidDate = ?";
 	
@@ -374,6 +377,7 @@ public class ProductDaoImpl implements ProductDao {
 			statement.setString(2, prod.getDescription());
 			statement.setDouble(3, prod.getPrice());
 			statement.setBoolean(4, prod.isSold());
+			statement.setDate(5, prod.getBidDate());
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			try {
 				ImageIO.write(prod.getImage(), "jpg", baos);
@@ -384,8 +388,8 @@ public class ProductDaoImpl implements ProductDao {
 			byte[] imageBytes = baos.toByteArray();
 			Blob blob = conn.createBlob();
 			blob.setBytes(1, imageBytes);
-			statement.setBlob(5, blob);
-			statement.setInt(6, prod.getProdId());
+			statement.setBlob(6, blob);
+			statement.setInt(7, prod.getProdId());
 			int result = statement.executeUpdate();
 			if (result != 1) {
 				throw new DaoException("Unable to update product: " + result + " rows changed!");
@@ -446,8 +450,10 @@ public class ProductDaoImpl implements ProductDao {
 		product.setDescription(rs.getString(3));
 		product.setPrice(rs.getDouble(4));
 		product.setSold(rs.getBoolean(5));
+		Date date = rs.getDate(6);
+		product.setBidDate(date);
 		try {
-			product.setImage(ImageIO.read(rs.getBlob(6).getBinaryStream()));
+			product.setImage(ImageIO.read(rs.getBlob(7).getBinaryStream()));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}		
@@ -522,6 +528,7 @@ public class ProductDaoImpl implements ProductDao {
 		}
 	}
 	
+	@SuppressWarnings("resource")
 	@Override
 	public Product retrieveCurrrentAuctionProduct(Connection connection) throws SQLException, DaoException {
 		PreparedStatement statement = null;
@@ -529,6 +536,24 @@ public class ProductDaoImpl implements ProductDao {
 		try {
 			statement = connection.prepareStatement(retrieveProductByDate);
 			Date date = new Date(System.currentTimeMillis());
+			statement.setDate(1, date);
+			rs = statement.executeQuery();
+			
+			boolean flag = false;
+			while (rs.next()) {
+				Product product = buildProduct1(rs);
+				if(product.getBidStartTime().equals("")) {
+					flag = true;
+				}
+				break;
+			}
+			
+			if(flag) {
+				setBidTimings(connection);
+			}
+			
+			statement = connection.prepareStatement(retrieveProductByDate);
+			date = new Date(System.currentTimeMillis());
 			statement.setDate(1, date);
 			rs = statement.executeQuery();
 			
@@ -546,16 +571,10 @@ public class ProductDaoImpl implements ProductDao {
 			
 			String h_m = h + ":" + m;
 			
-			ArrayList<Product> products = new ArrayList<Product>();
 			while (rs.next()) {
 				Product product = buildProduct1(rs);
-//				System.out.println(h_m);
-//				System.out.println(product.getBidStartTime());
-//				System.out.println(product.getBidStartTime());
-//				System.out.println(h_m.compareTo(product.getBidStartTime())>0);
-//				System.out.println(h_m.compareTo(product.getBidStartTime())<0);
 				System.out.println();
-				if(h_m.compareTo(product.getBidStartTime())>0 && h_m.compareTo(product.getBidEndTime())<0) {
+				if(h_m.compareTo(product.getBidStartTime())>=0 && h_m.compareTo(product.getBidEndTime())<0) {
 					return product;
 				}
 			}
@@ -569,6 +588,64 @@ public class ProductDaoImpl implements ProductDao {
 				rs.close();
 			}
 		}
+	}
+
+	private void setBidTimings(Connection connection)  throws SQLException, DaoException {
+		PreparedStatement statement = null;
+		ResultSet rs = null;
+		try {
+			statement = connection.prepareStatement(retrieveProductByDate);
+			Date date = new Date(System.currentTimeMillis());
+			statement.setDate(1, date);
+			rs = statement.executeQuery();
+			
+			
+			AdminTimingsDao adminDao = AdminTimingsDaoImpl.getInstance();
+			AuctionTimings auctionTimings = adminDao.getTimings(connection, date);
+			
+			String start = auctionTimings.getStartTime();
+			String end = auctionTimings.getEndTime();
+			while (rs.next()) {
+				Product product = buildProduct1(rs);
+				
+				product.setBidStartTime(start);
+				product.setBidEndTime(end);
+				update(connection, product);
+				
+				start = end;
+				end = incrementTime(end);
+			}
+			
+		} finally {
+			if (statement != null && !statement.isClosed()) {
+				statement.close();
+			}
+			if (rs != null && !rs.isClosed()) {
+				rs.close();
+			}
+		}
+	}
+	
+	private String incrementTime(String end) {
+		int hour = Integer.parseInt(end.split(":")[0]);
+		int min = Integer.parseInt(end.split(":")[1]);
+		
+		min = min+15;
+		if(min>15) {
+			min=min-60;
+			hour+=1;
+		}
+		
+		String m = min + "";
+		String h = hour + "";
+		if(m.length()==1) {
+			m='0'+m;
+		}
+		if(h.length()==1) {
+			h='0'+h;
+		}
+		
+		return h + ":" + m;
 	}
 
 }

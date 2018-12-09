@@ -1,16 +1,23 @@
 package db.dao.impl;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import db.dao.AdminTimingsDao;
 import db.dao.DaoException;
+import domain.user.AuctionTimings;
 
 public class AdminTimingsDaoImpl implements AdminTimingsDao {
 	private static final String findTimings = 
-			"SELECT a.maxItems, a.startTime, a.endTime FROM AuctionTimings a";
+			"SELECT a.auctionDate, a.startTime, a.endTime FROM AuctionTimings a "
+			+ "where a.auctionDate = ?";
+	
+	private static final String findDefaultTimings = 
+			"SELECT a.auctionDate, a.startTime, a.endTime FROM AuctionTimings a "
+			+ "where a.auctionDate is null";
 	
 	private static AdminTimingsDao instance;
 	
@@ -25,19 +32,24 @@ public class AdminTimingsDaoImpl implements AdminTimingsDao {
 		return instance;
 	}
 	
+	@SuppressWarnings("resource")
 	@Override
-	public String[] getTimings(Connection connection) throws SQLException, DaoException{
+	public AuctionTimings getTimings(Connection connection, Date date) throws SQLException, DaoException{
 		PreparedStatement statement = null;
 		ResultSet rs = null;
 		try {
 			statement = connection.prepareStatement(findTimings);
+			statement.setDate(1, date);
 			rs = statement.executeQuery();
 			
 			boolean found = rs.next();
 			if (!found) {
-				return null;
+				statement = connection.prepareStatement(findDefaultTimings);
+				rs = statement.executeQuery();
+				found = rs.next();
 			}
-			String[] auctiontimings = findTime(rs);
+			
+			AuctionTimings auctiontimings = findTime(rs);
 			return auctiontimings;
 			
 		} finally {
@@ -50,13 +62,15 @@ public class AdminTimingsDaoImpl implements AdminTimingsDao {
 		}
 	}
 	
-	private static String[] findTime(ResultSet rs) throws SQLException {
-		String[] auctiontimings = new String[3];
-		auctiontimings[0] = rs.getInt(1)+"";
-		auctiontimings[1] = rs.getString(2);
-		auctiontimings[2] = rs.getString(3);
+	private static AuctionTimings findTime(ResultSet rs) throws SQLException {
+		AuctionTimings auctionTimings = new AuctionTimings();
 		
-		return auctiontimings;
+		auctionTimings.setAuctionDate(rs.getDate(1));
+		auctionTimings.setStartTime(rs.getString(2));
+		
+		auctionTimings.setEndTime(rs.getString(3));
+		
+		return auctionTimings;
 	}
 	
 }

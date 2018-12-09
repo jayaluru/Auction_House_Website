@@ -93,6 +93,7 @@
 			<th>Description</th>
 			<th>Price</th>
 			<th>Sold</th>
+			<th>Bid Date</th>
 			<th>Action</th>   
 		</tr>
 	     
@@ -103,6 +104,7 @@
 				<td><%= prod.getDescription() %></td>
 				<td><%= prod.getPrice() %></td>
 				<td><%= prod.isSold() %></td>
+				<td><%= prod.getBidDate() %></td>
 				
 				<td>
 					<form name="deleteform" action="DeleteController" method="post">

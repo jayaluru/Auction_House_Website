@@ -49,8 +49,8 @@
 	</div>
  	<hr>
 	
-	<h4 align="left"> Create Painting: </h4>
-	<form name="newproductform" enctype='multipart/form-data' action="ProductController" method="post" onsubmit="return productValidate()">
+	<h4 align="left"> Create Product: </h4>
+	<form name="newproductform" enctype='multipart/form-data' action="ProductController" method="post" onsubmit="return prodValidate()">
 	
 		Name: <input type="text" name="name" id="name">
 		<br>
@@ -62,11 +62,8 @@
 		<br>
 		Bidding Date: <input type="date" name="biddate" id="biddate" value='<%=new Date(System.currentTimeMillis())%>'>
 		<br>
-		Bid Start Duration: <input type="text" name="startbid" id="startbid">
-		<br>
-		Bid End Duration: <input type="text" name="endbid" id="endbid">
-		<br>
 		<input type="submit" name="submit" value="create" >
 	</form>
+	<h4 align="left"> ${message_newProduct} </h4>
 </body>
 </html> 

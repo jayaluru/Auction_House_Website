@@ -132,6 +132,7 @@
 			<th>Description</th>
 			<th>Price</th>
 			<th>Sold</th>
+			<th>Bid Date</th>
 			<th>Action</th>   
 		</tr>
 	     
@@ -142,6 +143,7 @@
 				<td><%= prod.getDescription() %></td>
 				<td><%= prod.getPrice() %></td>
 				<td><%= prod.isSold() %></td>
+				<td><%= prod.getBidDate() %></td>
 				<td>
 					<form name="detailsform" action="DetailsController" method="post">
 						<input type="hidden" name="prodId" value="<%= prod.getProdId().toString() %>">

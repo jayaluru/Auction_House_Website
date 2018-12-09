@@ -28,11 +28,9 @@ CREATE TABLE IF NOT EXISTS `auctionwebsite`.`Admin` (
 -- Table `auctionwebsite`.`AuctionTimings`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `auctionwebsite`.`AuctionTimings` (
-  `maxItems` INT NOT NULL,
+  `auctionDate` DATE,
   `startTime` VARCHAR(5) NOT NULL,
-  `endTime` VARCHAR(5) NOT NULL,
-  `duration` VARCHAR(5) NOT NULL,
-  PRIMARY KEY (`maxItems`,`startTime`,`endTime`));
+  `endTime` VARCHAR(5) NOT NULL);
 
 
 
@@ -180,9 +178,9 @@ CREATE TABLE IF NOT EXISTS `auctionwebsite`.`TransactionProduct` (
     REFERENCES `auctionwebsite`.`Product` (`prodId`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
+  
 
-
-INSERT INTO `auctionwebsite`.`AuctionTimings` VALUES (40, '08:00', '06:00', 15);
+INSERT INTO `auctionwebsite`.`AuctionTimings` (`startTime`, `endTime`) VALUES ('08:00', '06:00');
 
 INSERT INTO `auctionwebsite`.`Admin` VALUES (10000, 'kalyan', 'kalyan', 'kalyan', 'dallas', 'Website Owner');
 

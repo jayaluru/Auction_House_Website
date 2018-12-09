@@ -92,6 +92,7 @@ function prodValidate(formname) {
 	var name = document.forms[formname]["name"];
 	var description = document.forms[formname]["description"];
 	var price = document.forms[formname]["price"];
+	var biddate = document.forms[formname]["biddate"];
 
 	if (name.value == "") {
         alert("Name must be filled out");
@@ -114,120 +115,14 @@ function prodValidate(formname) {
         description.focus();
         return false;
     }else{
-    	return true;
-    }
-}
+    	var today = new Date().getTime(),
+    	biddate = biddate.split("-");
 
-function paintValidate() {
-	prodVal = prodValidate("newpaintform");
-	if (!prodVal){
-		return false;
-	}
-	var canvasType = document.forms["newpaintform"]["canvasType"];
-	var paintType = document.forms["newpaintform"]["paintType"];
-	var length = document.forms["newpaintform"]["length"];
-	var width = document.forms["newpaintform"]["width"];
-		
-    if (canvasType.value == "") {
-        alert("CanvasType must be filled out");
-        canvasType.focus();
-        return false;
-    }else if (paintType.value == "") {
-        alert("PaintType must be filled out");
-        paintType.focus();
-        return false;
-    }else if (length.value == "") {
-        alert("Length must be filled out");
-        length.focus();
-        return false;
-    }else if (width.value == "") {
-        alert("Width must be filled out");
-        width.focus();
-        return false;
-    }else if (canvasType.value.length > 255) {
-        alert("Canvas Type too long!");
-        canvasType.focus();
-        return false;
-    }else if (paintType.value.length > 255) {
-        alert("Paint Type too long!");
-        paintType.focus();
-        return false;
-    }else{
-    	return true;
-    }
-}
-
-function sculptValidate() {
-	prodVal = prodValidate("newsculptform");
-	if (!prodVal){
-		return false;
-	}
-	var material = document.forms["newsculptform"]["material"];
-	var length = document.forms["newsculptform"]["length"];
-	var width = document.forms["newsculptform"]["width"];
-	var height = document.forms["newsculptform"]["height"];
-	var weight = document.forms["newsculptform"]["weight"];
-		
-    if (material.value == "") {
-        alert("Material must be filled out");
-        material.focus();
-        return false;
-    }else if (length.value == "") {
-        alert("Length must be filled out");
-        length.focus();
-        return false;
-    }else if (width.value == "") {
-        alert("Width must be filled out");
-        width.focus();
-        return false;
-    }else if (height.value == "") {
-        alert("Height must be filled out");
-        height.focus();
-        return false;
-    }else if (weight.value == "") {
-        alert("Weight must be filled out");
-        weight.focus();
-        return false;
-    }else if (material.value.length > 255) {
-        alert("Material too long!");
-        material.focus();
-        return false;
-    }else{
-    	return true;
-    }
-}
-
-function craftValidate() {
-	prodVal = prodValidate("newcraftform");
-	if (!prodVal){
-		return false;
-	}
-	var usage = document.forms["newcraftform"]["usage"];
-	var length = document.forms["newcraftform"]["length"];
-	var width = document.forms["newcraftform"]["width"];
-	var height = document.forms["newcraftform"]["height"];
-		
-    if (usage.value == "") {
-        alert("Usage must be filled out");
-        usage.focus();
-        return false;
-    }else if (length.value == "") {
-        alert("Length must be filled out");
-        length.focus();
-        return false;
-    }else if (width.value == "") {
-        alert("Width must be filled out");
-        width.focus();
-        return false;
-    }else if (height.value == "") {
-        alert("Height must be filled out");
-        height.focus();
-        return false;
-    }else if (usage.value.length > 255) {
-        alert("Usage too long!");
-        usage.focus();
-        return false;
-    }else{
-    	return true;
+	    idate = new Date(biddate[0], biddate[1] - 1, biddate[2]).getTime();
+	    if((today - idate) >= 0){
+	    	alert("Please enter future date!");
+	    	biddate.focus();
+	        return false;
+	    }
     }
 }
