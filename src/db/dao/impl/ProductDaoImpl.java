@@ -590,7 +590,7 @@ public class ProductDaoImpl implements ProductDao {
 		}
 	}
 
-	private void setBidTimings(Connection connection)  throws SQLException, DaoException {
+	private void setBidTimings(Connection connection) throws SQLException, DaoException {
 		PreparedStatement statement = null;
 		ResultSet rs = null;
 		try {
