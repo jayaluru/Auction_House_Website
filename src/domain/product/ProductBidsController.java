@@ -1,6 +1,6 @@
 package domain.product;
 
-import java.awt.List;
+import java.util.List;
 import java.io.IOException;
 import java.sql.Date;
 import java.sql.SQLException;
@@ -34,7 +34,7 @@ public class ProductBidsController extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		
-		String redirect = "searchresultsauctiontime.jsp";
+		String redirect = "allbids.jsp";
 		//String starttime = null;
 		//String endtime = null;
 		
@@ -43,27 +43,13 @@ public class ProductBidsController extends HttpServlet {
 		List<ProductBid> allBids = new ArrayList<>();
 		
 		
-		allBids= productServieImpl.getAllBids(prodId);
-		/*for(int i=0; i<30 ; i++)
-		{
-			Calendar today = Calendar.getInstance();
-			today.setTime(startdate);
-			today.add(Calendar.DAY_OF_YEAR, i);
-			java.sql.Date gtoday = new java.sql.Date(today.getTime().getTime()); ;
-
-			
-			try {
-				auctionTimings = adminService.getTimings(gtoday);
-				auctionTimings.setAuctionDate(gtoday);
-				allauctions.add(auctionTimings);
-			} catch (SQLException ex) {
-				
-			} catch (DaoException ex) {
-				//request.setAttribute("starttime",  ex.getMessage());
-				//request.setAttribute("endtime",  ex.getMessage());
-				ex.printStackTrace();
-			}
-		}*/
+		try {
+			allBids= productServieImpl.getAllBids(prodId);
+		} catch (SQLException | DaoException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		
 		request.setAttribute("allBids",allBids);
 		
