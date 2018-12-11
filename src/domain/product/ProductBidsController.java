@@ -45,6 +45,7 @@ public class ProductBidsController extends HttpServlet {
 		
 		try {
 			allBids= productServieImpl.getAllBids(prodId);
+			
 		} catch (SQLException | DaoException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -61,7 +61,7 @@
 	//String searchCriteria = (String) request.getAttribute("searchCriteria");
 	//String starttime = (String) request.getAttribute("starttime");
 	//String endtime = (String) request.getAttribute("endtime");
-	ArrayList<ProductBid> allbids = (ArrayList) request.getAttribute("allbids");
+	ArrayList<ProductBid> allbids = (ArrayList) request.getAttribute("allBids");
 	
 	%>
 	<div class="menu" align = "Center">

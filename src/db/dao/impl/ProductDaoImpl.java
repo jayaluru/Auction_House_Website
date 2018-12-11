@@ -109,14 +109,14 @@ public class ProductDaoImpl implements ProductDao {
 	
 	private static final String retrieveProductByDate = 
 			"SELECT "
-			+ "p.PRODID, p.NAME, p.DESCRIPTION, p.PRICE, p.ISSOLD, p.bidDate, p.PHOTO, "
-			+ "p.bidStartTime, p.bidEndTime FROM PRODUCT p "
+			+ "p.PRODID, p.NAME, p.DESCRIPTION, p.PRICE, p.ISSOLD, p.PHOTO, "
+			+ "p.bidStartTime, p.bidEndTime, p.bidDate  FROM PRODUCT p "
 			+ "WHERE p.bidDate = ?";
 	
 	private static final String retrieveProductBids = 
 			"SELECT "
-			+ "PRODID, USERID, BID, "
-			+ "FROM PRODUCTBID"
+			+ "PRODID, USERID, BID "
+			+ "FROM PRODUCTBID "
 			+ "WHERE PRODID = ?";
 	
 	private static ProductDao instance;
@@ -616,7 +616,7 @@ public class ProductDaoImpl implements ProductDao {
 			
 			while (rs.next()) {
 				Product product = buildProduct1(rs);
-				System.out.println();
+				
 				if(h_m.compareTo(product.getBidStartTime())>=0 && h_m.compareTo(product.getBidEndTime())<0) {
 					return product;
 				}
