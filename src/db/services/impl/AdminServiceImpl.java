@@ -1,6 +1,7 @@
 package db.services.impl;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.SQLException;
 
 import db.DbManager;
@@ -64,6 +65,33 @@ public class AdminServiceImpl implements AdminService{
 			
 			connection.commit();
 			return count;
+		} catch (Exception ex) {
+			System.out.println(ex);
+			ex.printStackTrace();
+			connection.rollback();
+			throw ex;
+		} finally {
+			if (connection != null) {
+				connection.setAutoCommit(true);
+				if (!connection.isClosed()) {
+					connection.close();
+				}
+			}
+		}
+	}
+	
+	
+	@Override
+	public AuctionTimings getTimings(Date date) throws SQLException, DaoException {
+		
+		Connection connection = db.getConnection();
+		try {
+			connection.setAutoCommit(false);
+
+			AuctionTimings auctionTimings = adminDao.getTimings(connection, date);
+			
+			connection.commit();
+			return auctionTimings;
 		} catch (Exception ex) {
 			System.out.println(ex);
 			ex.printStackTrace();

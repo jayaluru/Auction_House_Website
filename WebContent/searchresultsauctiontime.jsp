@@ -4,6 +4,8 @@
 <%@ page import="java.util.*" %>
 <%@ page import="domain.product.*" %>
 <%@ page import="domain.product.Product" %>
+<%@ page import="domain.user.AuctionTimings" %>
+
 <%@page import="db.services.*"%>
 <%@page import="db.services.impl.*"%>
 <%@page import="db.dao.impl.*"%>
@@ -55,8 +57,12 @@
 	}
 	Integer invnId = (Integer) sess.getAttribute("invnId");
 	String name = (String) sess.getAttribute("name");
-	List<Product> products = (List<Product>) request.getAttribute("searchResults");
-	String searchCriteria = (String) request.getAttribute("searchCriteria");
+	//List<Product> products = (List<Product>) request.getAttribute("searchResults");
+	//String searchCriteria = (String) request.getAttribute("searchCriteria");
+	String starttime = (String) request.getAttribute("starttime");
+	String endtime = (String) request.getAttribute("endtime");
+	ArrayList<AuctionTimings> allauctions = (ArrayList) request.getAttribute("allauctions");
+	
 	%>
 	<div class="menu" align = "Center">
 		<a href="home.jsp" name="menuhome">Home</a>
@@ -73,45 +79,38 @@
  	<hr>
  	
 	<h4>Search Results:</h4>	
-   <% 
-	if (products.size() > 0){
-	
-   	%>  
+
    	 <!–– class="table table-striped table-bordered table-hover table-sm" -->
+   	 
+
 	<table id="ProductTable" class="table table-striped table-bordered table-hover table-sm sortable" cellspacing="0" width="100%">
 		<tr>
-			<th>Image</th>
-       		<th>Name</th>
-       		<th>Description</th>
-       		<th>Price</th>
-       		<th>Action</th>   
+			<th>Date</th>
+       		<th>Start Time</th>
+       		<th>End Time</th>
+       		<th>Button</th>
+ 
    		</tr>
    		
-     	<%for(Product prod : products) {%>
+		<%for(AuctionTimings aucs : allauctions) {%>
 			<tr>
-			<td><img src="data:image/jpeg;base64, <%= prod.getEncodedImage() %> " height="100" width="100" alt="bye"/></td>
-			<td><%= prod.getName() %></td>
-			<td><%= prod.getDescription() %></td>
-			<td><%= prod.getPrice() %></td>
-			<td>
-				<form name="profileform" action="ProfileController" method="post">
-						<input type="hidden" name="prodId" value="<%= prod.getProdId().toString() %>">
-						<input class="demo btn btn-primary" type="submit" name="UserProfile" value = "View User" style="left: 460px;">
-				</form>
-			</td>
-			<td>
-				<form name="profileform" action="ProductBidsController" method="post">
-						<input type="hidden" name="prodId" value="<%= prod.getProdId().toString() %>">
-						<input class="demo btn btn-primary" type="submit" name="UserProfile" value = "View Bids" style="left: 460px;">
-				</form>
-			</td>
+				<td><%= aucs.getAuctionDate()  %></td>
+				<td><%= aucs.getStartTime() %></td>
+				<td><%= aucs.getEndTime() %></td>
+				<td>
+					<form name="profileform" action="AdvancedSearchController" method="post">
+							<input type="hidden" name="searchCriteria" value="<%= ""  %>">
+							<input type="hidden" name="startdate" value="<%= aucs.getAuctionDate()  %>">
+							<input type="hidden" name="enddate" value="<%= aucs.getAuctionDate()  %>">
+							<input class="demo btn btn-primary" type="submit" name="searchSubmit" value = "View Products" style="left: 460px;">
+					</form>
+				</td>
 			</tr>
-			<%}%>
+			<% } %>
+
 	</table>
    	<br>
-	<% } else {%>
-		<p> No results found. </p>
-	<%}%>
+
 </body>
 
 <script type="text/javascript">

@@ -178,7 +178,7 @@ CREATE TABLE IF NOT EXISTS `auctionwebsite`.`TransactionProduct` (
     REFERENCES `auctionwebsite`.`Product` (`prodId`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
-  
+
 
 INSERT INTO `auctionwebsite`.`AuctionTimings` (`startTime`, `endTime`) VALUES ('08:00', '06:00');
 

@@ -113,6 +113,12 @@ public class ProductDaoImpl implements ProductDao {
 			+ "p.bidStartTime, p.bidEndTime FROM PRODUCT p "
 			+ "WHERE p.bidDate = ?";
 	
+	private static final String retrieveProductBids = 
+			"SELECT "
+			+ "PRODID, USERID, BID, "
+			+ "FROM PRODUCTBID"
+			+ "WHERE PRODID = ?";
+	
 	private static ProductDao instance;
 	
 	private ProductDaoImpl() {
@@ -170,6 +176,43 @@ public class ProductDaoImpl implements ProductDao {
 			}
 			ProductBid productBid = buildProductBid(rs);
 			return productBid;
+		} finally {
+			if (statement != null && !statement.isClosed()) {
+				statement.close();
+			}
+			if (rs != null && !rs.isClosed()) {
+				rs.close();
+			}
+		}
+	}
+	
+	@Override
+	public List<ProductBid> getAllBids(Connection connection, Integer prodId) throws SQLException, DaoException {
+		if (prodId == null) {
+			throw new DaoException("ProdId must not be null!");
+		}
+		
+		PreparedStatement statement = null;
+		ResultSet rs = null;
+		try {
+			statement = connection.prepareStatement(retrieveProductBids);
+			statement.setInt(1, prodId);
+			rs = statement.executeQuery();
+			
+			ArrayList<ProductBid> productBids = new ArrayList<ProductBid>();
+
+			while (rs.next()) {
+				ProductBid productbid = buildProductBid(rs);
+				productBids.add(productbid);
+			}
+			return productBids;
+			
+			//boolean found = rs.next();
+			//if (!found) {
+			//	return null;
+			//}
+			//ProductBid productBid = buildProductBid(rs);
+			//return productBids;
 		} finally {
 			if (statement != null && !statement.isClosed()) {
 				statement.close();

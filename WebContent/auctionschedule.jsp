@@ -1,3 +1,4 @@
+<%@page import="java.sql.Date"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -23,9 +24,7 @@
 		response.sendRedirect("login.jsp");
 		return;
 	}
-	Integer invnId = (Integer) sess.getAttribute("invnId");
-	Integer cartId = (Integer) sess.getAttribute("cartId");
-	String name = (String) sess.getAttribute("name");
+	
 	%>
 	<div class="menu" align = "Center">
 		<a href="home.jsp" name="menuhome">Home</a>
@@ -36,15 +35,18 @@
 		<a href="transactions.jsp" name="menutransactions">Transactions</a>
 		<a href="profile.jsp" name="menuprofile">Profile</a>
 		<a href="logout.jsp" name="menulogout">Logout</a>
-		<hr>
-		<div class="searchbar" align ="Center"> 
-			<form method="post" action="SearchController">
-				<input type="text" name="searchCriteria" placeholder="Search..">
-				<input type="submit" name="searchSubmit" value="Go">
-			</form>
-		</div>
 	</div>
  	<hr>
+ 	
+ 	<form method="post" action="AuctionTimingsSearchController">
+ 		<br>
+ 		
+		Start Date: <input type="date" name="startdate" value='<%=new Date(System.currentTimeMillis())%>'>
+		<br>
+		
+		
+		<input type="submit" name="searchSubmit" value="Go">
+	</form>
 	
 </body>
 </html> 

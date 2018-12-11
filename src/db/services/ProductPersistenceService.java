@@ -12,6 +12,8 @@ public interface ProductPersistenceService {
 	
 	public ProductBid placeBid(ProductBid productBid) throws SQLException, DaoException;
 	
+	public List<ProductBid> getAllBids(Integer prodId) throws SQLException, DaoException;
+	
 	public void create(Product prod, Integer invnId) throws SQLException, DaoException;
 	
 	public void delete(Product prod, Integer invnId) throws SQLException, DaoException;

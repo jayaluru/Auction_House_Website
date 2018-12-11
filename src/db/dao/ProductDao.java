@@ -12,6 +12,8 @@ public interface ProductDao extends ProductCategoryDao<Product> {
 	public void createBid(Connection connection, ProductBid productBid) throws SQLException, DaoException;
 	
 	public ProductBid getHighestBid(Connection connection, Integer prodId) throws SQLException, DaoException;
+	
+	public List<ProductBid> getAllBids(Connection connection, Integer prodId) throws SQLException, DaoException;
 
 	public List<Product> retrieveByTransaction(Connection connection, Integer trxnId) throws SQLException, DaoException;
 
